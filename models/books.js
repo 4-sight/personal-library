@@ -12,7 +12,8 @@ booksModel.addComment = function(id, comment) {
 
   return this.findByIdAndUpdate(
     id,
-    {$push: {comments: comment}}
+    { $push: {comments: comment} },
+    { new: true }
   )
 }
 
@@ -36,7 +37,13 @@ booksModel.deleteBook = function(id) {
 
 booksModel.deleteAllBooks = function() {
 
-  this.deleteMany({})
+  return this.deleteMany({})
+}
+
+
+booksModel.getOneBook = function(id) {
+
+  return this.findById(id)
 }
 
 
