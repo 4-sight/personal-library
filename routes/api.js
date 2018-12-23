@@ -22,7 +22,15 @@ module.exports = function (app) {
       if (!response) {
         res.send('no books exist')
       } else {
-        res.json(response)
+        res.json(response.map(
+          book => {
+            return {
+              title: book.title,
+              _id: book._id,
+              commentcount: book.comments.length
+            }
+          }
+        ))
       }
     })
     
@@ -35,7 +43,11 @@ module.exports = function (app) {
       if (!response) {
         res.send('no book exists')
       } else {
-        res.json(response)
+        res.json({
+          title: response.title,
+          comments: response.comments,
+          id: response._id,
+        })
       }
     })
     
@@ -51,6 +63,7 @@ module.exports = function (app) {
   app.route('/api/books/:id')
     .get(async (req, res) => {
       var bookId = req.params.id
+      console.log(bookId)
       //json res format: {"_id": bookId, "title": book_title, "comments": [comment,comment,...]}
       let response
       try{response = await books.getOneBook(bookId)}
@@ -59,7 +72,11 @@ module.exports = function (app) {
       if (!response) {
         res.send('no book exists')
       } else {
-        res.json(response)
+        res.json({
+          _id: response._id,
+          title: response.title,
+          comments: response.comments
+        })
       }
     })
     
