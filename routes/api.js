@@ -19,7 +19,11 @@ module.exports = function (app) {
       let response
       try {response = await books.getAllBooks()}
       catch(err) {console.error('Unable to retrieve books', err)}
-      res.json(response)
+      if (!response) {
+        res.send('no books exist')
+      } else {
+        res.json(response)
+      }
     })
     
     .post(async (req, res) => {
@@ -28,7 +32,11 @@ module.exports = function (app) {
       let response
       try {response = await books.addBook(title)}
       catch(err) {console.error('unable to get book', err)}
-      res.json (response)
+      if (!response) {
+        res.send('no book exists')
+      } else {
+        res.json(response)
+      }
     })
     
     .delete(async (req, res) => {
@@ -46,8 +54,13 @@ module.exports = function (app) {
       //json res format: {"_id": bookId, "title": book_title, "comments": [comment,comment,...]}
       let response
       try{response = await books.getOneBook(bookId)}
-      catch(err) {console.error('failed to return book', err)}
-      res.json(response)
+      catch(err) {
+        console.error('book could not be found', err)}
+      if (!response) {
+        res.send('no book exists')
+      } else {
+        res.json(response)
+      }
     })
     
     .post(async (req, res) => {
