@@ -101,14 +101,23 @@ suite('Functional Tests', function() {
       })
       
       test('Test GET /api/books/[id] with valid id in db', async() => {
+        let setup = await chai.request(server)
+          .post('/api/books/')
+          .type('form')
+          .send({title: 'Some great test book'})
+
+        const id = (setup.body._id)
+
         let res = await chai.request(server)
-          .get('/api/books')
+          .get(`/api/books/${id}`)
           
         assert.equal(res.status, 200)
-        assert.isArray(res.body, 'response should be an array')
-        assert.property(res.body[0], 'commentcount', 'Books in array should contain commentcount')
-        assert.property(res.body[0], 'title', 'Books in array should contain title')
-        assert.property(res.body[0], '_id', 'Books in array should contain _id')
+        assert.isObject(res.body, 'response should be an object')
+        assert.property(res.body, 'comments', 'Book should contain comments')
+        assert.property(res.body, 'title', 'Book should contain title')
+        assert.property(res.body, '_id', 'Books should contain _id')
+        assert.equal(res.body._id, id, 'Book should have correct id')
+
         return res
       })
       
@@ -118,23 +127,28 @@ suite('Functional Tests', function() {
     suite('POST /api/books/[id] => add comment/expect book object with id', function(){
       
       test('Test POST /api/books/[id] with comment', async () => {
-        let res = await chai.request(server)
+        let setup = await chai.request(server)
           .post('/api/books/')
           .type('form')
-          .send({title: 'Some great test book'})
+          .send({title: 'Another great test book'})
 
-        const id = (res.body._id)
+        const id = (setup.body._id)
+        const testComment = 'I like this test book'
 
-        let res2 = await chai.request(server)
-          .get(`/api/books/${id}`)
+        let res = await chai.request(server)
+          .post(`/api/books/${id}`)
+          .type('form')
+          .send({comment: testComment})
           
-        assert.equal(res2.status, 200)
-        assert.isObject(res2.body, 'response should be an object')
-        assert.property(res2.body, 'comments', 'Book should contain comments')
-        assert.property(res2.body, 'title', 'Book should contain title')
-        assert.property(res2.body, '_id', 'Books should contain _id')
+        assert.equal(res.status, 200)
+        assert.isObject(res.body, 'response should be an object')
+        assert.property(res.body, 'comments', 'Book should contain comments')
+        assert.property(res.body, 'title', 'Book should contain title')
+        assert.property(res.body, '_id', 'Books should contain _id')
+        assert.equal(res.body._id, id, 'Book should have correct id')
+        assert.equal(res.body.comments[0], testComment)
 
-        return res2
+        return res
       })
       
     })
