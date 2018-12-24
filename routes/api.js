@@ -46,7 +46,7 @@ module.exports = function (app) {
         res.json({
           title: response.title,
           comments: response.comments,
-          id: response._id,
+          _id: response._id,
         })
       }
     })
