@@ -37,12 +37,12 @@ module.exports = function (app) {
     .post(async (req, res) => {
       var title = req.body.title
       //response will contain new book object including at least _id and title
-      let response
-      try {response = await books.addBook(title)}
-      catch(err) {console.error('unable to get book', err)}
-      if (!response) {
-        res.send('no book exists')
+      if(!title) {
+        res.send('Please enter a book title')
       } else {
+        let response
+        try {response = await books.addBook(title)}
+        catch(err) {console.error('unable to add book', err)}
         res.json({
           title: response.title,
           comments: response.comments,
