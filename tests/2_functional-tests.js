@@ -142,10 +142,11 @@ suite('Functional Tests', function() {
           
         assert.equal(res.status, 200)
         assert.isObject(res.body, 'response should be an object')
-        assert.property(res.body, 'comments', 'Book should contain comments')
         assert.property(res.body, 'title', 'Book should contain title')
         assert.property(res.body, '_id', 'Books should contain _id')
         assert.equal(res.body._id, id, 'Book should have correct id')
+        assert.property(res.body, 'comments', 'Book should contain comments')
+        assert.isArray(res.body.comments, 'comments is an array')
         assert.equal(res.body.comments[0], testComment)
 
         return res
