@@ -97,6 +97,7 @@ suite('Functional Tests', function() {
         assert.equal(res.status, 200)
         assert.isObject(res.body, 'response should be an object')
         assert.equal(res.text, 'no book exists')
+        return res
       })
       
       test('Test GET /api/books/[id] with valid id in db', async() => {
@@ -108,6 +109,7 @@ suite('Functional Tests', function() {
         assert.property(res.body[0], 'commentcount', 'Books in array should contain commentcount')
         assert.property(res.body[0], 'title', 'Books in array should contain title')
         assert.property(res.body[0], '_id', 'Books in array should contain _id')
+        return res
       })
       
     })
@@ -116,23 +118,23 @@ suite('Functional Tests', function() {
     suite('POST /api/books/[id] => add comment/expect book object with id', function(){
       
       test('Test POST /api/books/[id] with comment', async () => {
-        let response = await chai.request(server)
+        let res = await chai.request(server)
           .post('/api/books/')
           .type('form')
           .send({title: 'Some great test book'})
 
-        const id = (response.body._id)
+        const id = (res.body._id)
 
-        let response2 = await chai.request(server)
+        let res2 = await chai.request(server)
           .get(`/api/books/${id}`)
           
-        assert.equal(response2.status, 200)
-        assert.isObject(response2.body, 'response should be an object')
-        assert.property(response2.body, 'comments', 'Book should contain comments')
-        assert.property(response2.body, 'title', 'Book should contain title')
-        assert.property(response2.body, '_id', 'Books should contain _id')
+        assert.equal(res2.status, 200)
+        assert.isObject(res2.body, 'response should be an object')
+        assert.property(res2.body, 'comments', 'Book should contain comments')
+        assert.property(res2.body, 'title', 'Book should contain title')
+        assert.property(res2.body, '_id', 'Books should contain _id')
 
-        return response2
+        return res2
       })
       
     })
